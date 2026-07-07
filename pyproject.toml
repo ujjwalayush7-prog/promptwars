@@ -1,2 +1,11 @@
+[project]
+name = "smart-bharat"
+version = "0.1.0"
+description = "AI-Powered Civic Companion"
+requires-python = ">=3.9"
+dependencies = [
+    "google-genai>=2.10.0"
+]
+
 [tool.vercel]
 entrypoint = "api.generate:handler"
