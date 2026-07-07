@@ -27,18 +27,13 @@ function addMessage(content, isUser = false) {
     const msgDiv = document.createElement('div');
     msgDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
     
-    // Convert markdown-lite to HTML for bot messages
+    // Convert markdown to HTML for bot messages
     let htmlContent = content;
     if (!isUser) {
-        // Simple markdown parsing for bold and bullets
-        htmlContent = content
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/\n\n/g, '</p><p>')
-            .replace(/\n- /g, '<br>• ');
-        
-        if (!htmlContent.startsWith('<p>')) {
-            htmlContent = `<p>${htmlContent}</p>`;
+        try {
+            htmlContent = marked.parse(content);
+        } catch (e) {
+            htmlContent = `<p>${content}</p>`;
         }
     } else {
         htmlContent = `<p>${content}</p>`;
@@ -209,14 +204,10 @@ async function handleFormSubmit(btnId, resultId, prompt, mode) {
         const textRes = data.result;
         
         // Format markdown to HTML
-        let htmlContent = textRes
-            .replace(/### (.*?)\n/g, '<h3>$1</h3>')
-            .replace(/## (.*?)\n/g, '<h2>$1</h2>')
-            .replace(/# (.*?)\n/g, '<h1>$1</h1>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/\n- /g, '<br>• ')
-            .replace(/\n\n/g, '<br><br>');
+        let htmlContent = textRes;
+        if (typeof marked !== 'undefined') {
+            htmlContent = marked.parse(textRes);
+        }
             
         if(resultArea) {
             resultArea.innerHTML = htmlContent;
