@@ -3,124 +3,323 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI-powered solution built by Ujjwal Ayush for PromptWars Hackathon 2026. Powered by Google Gemini 2.5 Pro.">
+    <meta name="description" content="Smart Bharat – AI-Powered Civic Companion. Access government services, report issues, and get personalized AI assistance in your language.">
     <meta name="author" content="Ujjwal Ayush">
     <meta name="theme-color" content="#0a0a1a">
-    <title>PromptWars AI Solution | Ujjwal Ayush</title>
+    <meta name="keywords" content="Smart Bharat, AI, Government Services, India, Civic Companion, PromptWars 2026">
+    <title>Smart Bharat – AI-Powered Civic Companion</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Skip Navigation Link for Accessibility -->
+    <!-- Skip Navigation for Accessibility -->
     <a href="#main-content" class="skip-link" id="skip-nav">Skip to main content</a>
 
-    <!-- Animated Background (decorative, hidden from screen readers) -->
+    <!-- Animated Background -->
     <div class="bg-animation" aria-hidden="true">
         <div class="bg-orb bg-orb-1"></div>
         <div class="bg-orb bg-orb-2"></div>
         <div class="bg-orb bg-orb-3"></div>
     </div>
 
-    <div class="container">
-        <!-- Header -->
-        <header class="header" id="header" role="banner">
-            <div class="header-glow" aria-hidden="true"></div>
-            <div class="header-badge" aria-label="PromptWars 2026 Hackathon">⚡ PromptWars 2026</div>
-            <h1 class="header-title">
-                <span class="gradient-text">🤖 PromptWars AI</span>
+    <div class="app-container">
+        <!-- Top Bar -->
+        <nav class="top-bar" role="navigation" aria-label="Main navigation">
+            <div class="top-bar-left">
+                <span class="logo" aria-label="Smart Bharat logo">🇮🇳</span>
+                <span class="brand-name">Smart Bharat</span>
+            </div>
+            <div class="top-bar-right">
+                <div class="lang-selector" role="group" aria-label="Language selection">
+                    <label for="language-select" class="sr-only">Select language</label>
+                    <select id="language-select" aria-label="Choose your preferred language">
+                        <option value="en">🌐 English</option>
+                        <option value="hi">🇮🇳 हिन्दी</option>
+                        <option value="ta">தமிழ்</option>
+                        <option value="te">తెలుగు</option>
+                        <option value="bn">বাংলা</option>
+                        <option value="mr">मराठी</option>
+                        <option value="gu">ગુજરાતી</option>
+                        <option value="kn">ಕನ್ನಡ</option>
+                        <option value="ml">മലയാളം</option>
+                        <option value="pa">ਪੰਜਾਬੀ</option>
+                        <option value="ur">اردو</option>
+                        <option value="od">ଓଡ଼ିଆ</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Header -->
+        <header class="hero" id="header" role="banner">
+            <div class="hero-glow" aria-hidden="true"></div>
+            <div class="hero-badge">⚡ PromptWars 2026 · Powered by Google Gemini</div>
+            <h1 class="hero-title">
+                <span class="gradient-text">Smart Bharat</span>
             </h1>
-            <p class="header-subtitle">Powered by Google Gemini 2.5 Pro · Built by Ujjwal Ayush</p>
+            <p class="hero-subtitle">Your AI-Powered Civic Companion — Access government services, report issues, and get help in your language</p>
         </header>
 
-        <!-- Main App -->
-        <main class="main-content" id="main-content" role="main">
-            <!-- Input Section -->
-            <section class="input-section glass-card" id="input-section" aria-labelledby="input-heading">
-                <div class="section-header">
-                    <span class="section-icon" aria-hidden="true">📝</span>
-                    <h2 id="input-heading">Enter Your Input</h2>
+        <!-- Feature Tabs -->
+        <div class="tabs-container" role="tablist" aria-label="Features">
+            <button class="tab active" role="tab" aria-selected="true" aria-controls="panel-chat" id="tab-chat" onclick="switchTab('chat')">
+                💬 AI Assistant
+            </button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="panel-services" id="tab-services" onclick="switchTab('services')">
+                🏛️ Find Schemes
+            </button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="panel-complaint" id="tab-complaint" onclick="switchTab('complaint')">
+                📢 Report Issue
+            </button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="panel-documents" id="tab-documents" onclick="switchTab('documents')">
+                📄 Documents
+            </button>
+        </div>
+
+        <!-- Main Content -->
+        <main id="main-content" role="main">
+
+            <!-- ========== CHAT PANEL ========== -->
+            <section class="panel active glass-card" id="panel-chat" role="tabpanel" aria-labelledby="tab-chat">
+                <!-- Quick Actions -->
+                <div class="quick-actions" role="group" aria-label="Quick action suggestions">
+                    <button class="quick-btn" onclick="quickAction('What government schemes am I eligible for if I am a farmer with annual income below 2 lakhs?')">🌾 Farmer Schemes</button>
+                    <button class="quick-btn" onclick="quickAction('How do I apply for Ayushman Bharat health insurance card?')">🏥 Ayushman Bharat</button>
+                    <button class="quick-btn" onclick="quickAction('What is the process to file an RTI application online?')">📋 RTI Process</button>
+                    <button class="quick-btn" onclick="quickAction('How to use DigiLocker to store my documents digitally?')">📱 DigiLocker</button>
+                    <button class="quick-btn" onclick="quickAction('What are the steps to get a new Aadhaar card for my newborn child?')">🆔 Aadhaar</button>
                 </div>
-                <label for="user-input" class="sr-only">Enter your text for AI processing</label>
-                <textarea 
-                    id="user-input" 
-                    class="input-textarea" 
-                    placeholder="Type or paste your text here..."
-                    rows="6"
-                    aria-describedby="input-help"
-                    aria-required="true"
-                ></textarea>
-                <p id="input-help" class="sr-only">Press Ctrl+Enter to submit, or use the Generate button below</p>
-                
-                <!-- Settings Row -->
-                <div class="settings-row" role="group" aria-label="Generation settings">
-                    <div class="setting-item">
-                        <label for="temperature-slider" id="temp-label">🎨 Creativity</label>
-                        <div class="slider-container">
-                            <input 
-                                type="range" 
-                                id="temperature-slider" 
-                                min="0" 
-                                max="100" 
-                                value="70" 
-                                class="slider"
-                                aria-labelledby="temp-label"
-                                aria-valuemin="0"
-                                aria-valuemax="1"
-                                aria-valuenow="0.7"
-                                aria-valuetext="Creativity level: 0.7 out of 1.0"
-                            >
-                            <span id="temp-value" class="slider-value" aria-live="polite">0.7</span>
+
+                <!-- Chat Messages Area -->
+                <div class="chat-area" id="chat-area" role="log" aria-label="Chat conversation" aria-live="polite">
+                    <div class="chat-message bot">
+                        <div class="msg-avatar" aria-hidden="true">🤖</div>
+                        <div class="msg-content">
+                            <p>🙏 <strong>Namaste!</strong> I'm your Smart Bharat AI assistant.</p>
+                            <p>I can help you with:</p>
+                            <ul>
+                                <li>🏛️ Government schemes & services</li>
+                                <li>📄 Document requirements</li>
+                                <li>📢 Reporting civic issues</li>
+                                <li>❓ Any question about public services</li>
+                            </ul>
+                            <p>Ask me anything, in any Indian language! 🌐</p>
                         </div>
                     </div>
                 </div>
 
-                <button 
-                    id="generate-btn" 
-                    class="generate-btn" 
-                    onclick="generateResponse()"
-                    aria-label="Generate AI response"
-                >
-                    <span class="btn-text">🚀 Generate Response</span>
-                    <span class="btn-loader" style="display:none;" aria-live="assertive">
-                        <span class="spinner" aria-hidden="true"></span> AI is thinking...
-                    </span>
-                </button>
-            </section>
-
-            <!-- Output Section -->
-            <section 
-                class="output-section glass-card" 
-                id="output-section" 
-                style="display:none;"
-                aria-labelledby="result-heading"
-                aria-live="polite"
-            >
-                <div class="section-header">
-                    <span class="section-icon" aria-hidden="true">🎯</span>
-                    <h2 id="result-heading">Result</h2>
-                    <button 
-                        class="copy-btn" 
-                        id="copy-btn" 
-                        onclick="copyResult()" 
-                        aria-label="Copy result to clipboard"
-                    >
-                        📋 Copy
+                <!-- Chat Input -->
+                <div class="chat-input-area">
+                    <label for="chat-input" class="sr-only">Type your question</label>
+                    <textarea 
+                        id="chat-input" 
+                        class="chat-textarea" 
+                        placeholder="Ask about government services, schemes, documents..." 
+                        rows="2"
+                        aria-label="Type your question here"
+                        aria-describedby="chat-help"
+                    ></textarea>
+                    <p id="chat-help" class="sr-only">Press Ctrl+Enter or click Send to submit your question</p>
+                    <button id="chat-send-btn" class="send-btn" onclick="sendChat()" aria-label="Send message">
+                        <span class="send-icon">➤</span>
                     </button>
                 </div>
-                <div id="result-content" class="result-content" role="region" aria-label="AI generated response" tabindex="0"></div>
             </section>
 
-            <!-- Error Section -->
-            <div id="error-message" class="error-message" style="display:none;" role="alert" aria-live="assertive">
-                <span aria-hidden="true">❌</span> <span id="error-text"></span>
-            </div>
+            <!-- ========== SERVICES PANEL ========== -->
+            <section class="panel glass-card" id="panel-services" role="tabpanel" aria-labelledby="tab-services" style="display:none;">
+                <div class="section-header">
+                    <h2>🏛️ Find Government Schemes For You</h2>
+                    <p class="section-desc">Tell us about yourself and we'll recommend schemes you're eligible for</p>
+                </div>
+
+                <form id="services-form" class="smart-form" onsubmit="findSchemes(event)" aria-label="Scheme finder form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="svc-age">Age</label>
+                            <input type="number" id="svc-age" placeholder="e.g. 28" min="0" max="120" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="svc-gender">Gender</label>
+                            <select id="svc-gender" required aria-required="true">
+                                <option value="">Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="svc-income">Annual Income (₹)</label>
+                            <input type="number" id="svc-income" placeholder="e.g. 200000" min="0" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="svc-state">State</label>
+                            <select id="svc-state" required aria-required="true">
+                                <option value="">Select State</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="West Bengal">West Bengal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="svc-category">Category</label>
+                            <select id="svc-category" required aria-required="true">
+                                <option value="">Select</option>
+                                <option value="General">General</option>
+                                <option value="OBC">OBC</option>
+                                <option value="SC">SC</option>
+                                <option value="ST">ST</option>
+                                <option value="EWS">EWS</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="svc-occupation">Occupation</label>
+                            <select id="svc-occupation" required aria-required="true">
+                                <option value="">Select</option>
+                                <option value="Farmer">Farmer</option>
+                                <option value="Student">Student</option>
+                                <option value="Self-employed">Self-employed</option>
+                                <option value="Salaried">Salaried</option>
+                                <option value="Unemployed">Unemployed</option>
+                                <option value="Senior Citizen">Senior Citizen</option>
+                                <option value="Homemaker">Homemaker</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="primary-btn" id="scheme-btn">
+                        <span class="btn-text">🔍 Find My Schemes</span>
+                        <span class="btn-loader" style="display:none;"><span class="spinner"></span> Searching...</span>
+                    </button>
+                </form>
+
+                <div id="services-result" class="result-area" style="display:none;" role="region" aria-label="Scheme recommendations" aria-live="polite"></div>
+            </section>
+
+            <!-- ========== COMPLAINT PANEL ========== -->
+            <section class="panel glass-card" id="panel-complaint" role="tabpanel" aria-labelledby="tab-complaint" style="display:none;">
+                <div class="section-header">
+                    <h2>📢 Report a Civic Issue</h2>
+                    <p class="section-desc">Describe your issue and we'll guide you to the right authority</p>
+                </div>
+
+                <form id="complaint-form" class="smart-form" onsubmit="fileComplaint(event)" aria-label="Complaint filing form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="cmp-type">Issue Type</label>
+                            <select id="cmp-type" required aria-required="true">
+                                <option value="">Select Category</option>
+                                <option value="Road Damage / Pothole">🚧 Road Damage / Pothole</option>
+                                <option value="Water Supply Issue">💧 Water Supply</option>
+                                <option value="Electricity / Power Cut">⚡ Electricity / Power Cut</option>
+                                <option value="Garbage / Sanitation">🗑️ Garbage / Sanitation</option>
+                                <option value="Street Light Not Working">💡 Street Light</option>
+                                <option value="Drainage / Sewage">🚰 Drainage / Sewage</option>
+                                <option value="Noise Pollution">🔊 Noise Pollution</option>
+                                <option value="Illegal Construction">🏗️ Illegal Construction</option>
+                                <option value="Public Transport">🚌 Public Transport</option>
+                                <option value="Other">📝 Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cmp-location">Location (Area, City, State)</label>
+                            <input type="text" id="cmp-location" placeholder="e.g. MG Road, Bangalore, Karnataka" required aria-required="true">
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="cmp-description">Describe the Issue</label>
+                        <textarea id="cmp-description" rows="4" placeholder="Provide details about the issue, how long it has persisted, and any impact on citizens..." required aria-required="true"></textarea>
+                    </div>
+                    <button type="submit" class="primary-btn" id="complaint-btn">
+                        <span class="btn-text">📨 Submit & Get Guidance</span>
+                        <span class="btn-loader" style="display:none;"><span class="spinner"></span> Processing...</span>
+                    </button>
+                </form>
+
+                <div id="complaint-result" class="result-area" style="display:none;" role="region" aria-label="Complaint guidance" aria-live="polite"></div>
+
+                <!-- Complaint Tracker -->
+                <div class="tracker-section" id="tracker-section">
+                    <h3>📋 Your Complaints</h3>
+                    <div id="complaint-list" class="complaint-list" role="list" aria-label="Filed complaints"></div>
+                </div>
+            </section>
+
+            <!-- ========== DOCUMENTS PANEL ========== -->
+            <section class="panel glass-card" id="panel-documents" role="tabpanel" aria-labelledby="tab-documents" style="display:none;">
+                <div class="section-header">
+                    <h2>📄 Document Requirements Checker</h2>
+                    <p class="section-desc">Select a service to see exactly what documents you need</p>
+                </div>
+
+                <form id="docs-form" class="smart-form" onsubmit="checkDocuments(event)" aria-label="Document checker form">
+                    <div class="form-group">
+                        <label for="doc-service">Which service do you need documents for?</label>
+                        <select id="doc-service" required aria-required="true">
+                            <option value="">Select a Service</option>
+                            <optgroup label="Identity Documents">
+                                <option value="New Aadhaar Card">New Aadhaar Card</option>
+                                <option value="PAN Card Application">PAN Card Application</option>
+                                <option value="Voter ID Card">Voter ID Card</option>
+                                <option value="Passport Application">Passport Application</option>
+                                <option value="Driving License">Driving License</option>
+                            </optgroup>
+                            <optgroup label="Certificates">
+                                <option value="Birth Certificate">Birth Certificate</option>
+                                <option value="Death Certificate">Death Certificate</option>
+                                <option value="Income Certificate">Income Certificate</option>
+                                <option value="Caste Certificate">Caste Certificate</option>
+                                <option value="Domicile Certificate">Domicile Certificate</option>
+                            </optgroup>
+                            <optgroup label="Government Schemes">
+                                <option value="PM Kisan Samman Nidhi">PM Kisan Samman Nidhi</option>
+                                <option value="Ayushman Bharat Card">Ayushman Bharat Card</option>
+                                <option value="PM Awas Yojana">PM Awas Yojana</option>
+                                <option value="Ration Card">Ration Card</option>
+                                <option value="Jan Dhan Yojana Account">Jan Dhan Yojana Account</option>
+                            </optgroup>
+                            <optgroup label="Other Services">
+                                <option value="Property Registration">Property Registration</option>
+                                <option value="Vehicle Registration">Vehicle Registration</option>
+                                <option value="GST Registration">GST Registration</option>
+                                <option value="Marriage Registration">Marriage Registration</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <button type="submit" class="primary-btn" id="docs-btn">
+                        <span class="btn-text">📋 Get Document Checklist</span>
+                        <span class="btn-loader" style="display:none;"><span class="spinner"></span> Generating...</span>
+                    </button>
+                </form>
+
+                <div id="docs-result" class="result-area" style="display:none;" role="region" aria-label="Document requirements" aria-live="polite"></div>
+            </section>
+
         </main>
 
         <!-- Footer -->
         <footer class="footer" role="contentinfo">
-            <p>Built with ❤️ by <strong>Ujjwal Ayush</strong> for PromptWars Hackathon 2026</p>
+            <div class="footer-content">
+                <p>🇮🇳 <strong>Smart Bharat</strong> — AI-Powered Civic Companion</p>
+                <p class="footer-sub">Built by <strong>Ujjwal Ayush</strong> for PromptWars Hackathon 2026 · Powered by Google Gemini 2.5 Pro</p>
+            </div>
         </footer>
     </div>
 
