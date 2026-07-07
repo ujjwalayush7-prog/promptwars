@@ -11,7 +11,7 @@ load_dotenv()
 # Add the project root to the path so we can import the API
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-PORT = 8000
+PORT = 8080
 PUBLIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public')
 
 class VercelDevHandler(http.server.SimpleHTTPRequestHandler):
@@ -26,8 +26,11 @@ class VercelDevHandler(http.server.SimpleHTTPRequestHandler):
             generate_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(generate_module)
             
-            # Create an instance of the handler and pass the request to it
-            api_handler = generate_module.handler(self.request, self.client_address, self.server)
+            # Borrow the methods to execute on current request context
+            self._set_cors_headers = generate_module.handler._set_cors_headers.__get__(self)
+            self._send_json_response = generate_module.handler._send_json_response.__get__(self)
+            do_post_impl = generate_module.handler.do_POST.__get__(self)
+            do_post_impl()
         else:
             self.send_error(404, "API endpoint not found")
 
@@ -37,7 +40,10 @@ class VercelDevHandler(http.server.SimpleHTTPRequestHandler):
             spec = importlib.util.spec_from_file_location("generate", "api/generate.py")
             generate_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(generate_module)
-            api_handler = generate_module.handler(self.request, self.client_address, self.server)
+            
+            self._set_cors_headers = generate_module.handler._set_cors_headers.__get__(self)
+            do_options_impl = generate_module.handler.do_OPTIONS.__get__(self)
+            do_options_impl()
         else:
             self.send_response(200)
             self.send_header('Access-Control-Allow-Origin', '*')
