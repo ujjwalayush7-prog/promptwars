@@ -56,10 +56,10 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## 👥 Team
+## 👤 Developer
 
 - Ujjwal Ayush ([@ujjwalayush7-prog](https://github.com/ujjwalayush7-prog))
 
 ## 📄 License
 
-MIT
+This project is open source.
