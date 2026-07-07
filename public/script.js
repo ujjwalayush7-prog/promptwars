@@ -100,8 +100,13 @@ async function sendChat() {
         const lang = document.getElementById('language-select').value;
         const res = await callApi(text, 'chat', lang);
         addMessage(res);
-    } catch (err) {
-        addMessage("❌ Sorry, I encountered an error connecting to the server. Please try again.");
+    } catch (error) {
+        console.error("API Error:", error);
+        
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'message ai-message error';
+        errorMsg.innerHTML = `<div class="message-content">❌ Error: ${error.message}</div>`;
+        chatMessages.appendChild(errorMsg);
     } finally {
         isTyping = false;
         sendBtn.disabled = false;
