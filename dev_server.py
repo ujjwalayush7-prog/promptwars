@@ -12,7 +12,7 @@ load_dotenv()
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 PORT = 8081
-PUBLIC_DIR = os.path.dirname(os.path.abspath(__file__))
+PUBLIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public')
 
 class VercelDevHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
