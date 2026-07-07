@@ -188,16 +188,28 @@ async function handleFormSubmit(btnId, resultId, prompt, mode) {
     const lang = document.getElementById('language-select').value;
     
     // Show loading
-    btn.disabled = true;
-    btnText.style.display = 'none';
-    btnLoader.style.display = 'inline';
-    resultArea.style.display = 'none';
+    if(btn) btn.disabled = true;
+    if(btnText) btnText.style.display = 'none';
+    if(btnLoader) btnLoader.style.display = 'inline';
+    if(resultArea) resultArea.style.display = 'none';
     
     try {
-        const textRes = await callApi(prompt, mode, lang);
+        const response = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input: prompt, mode: mode, language: lang, temperature: 0.7 })
+        });
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.error || 'Server error');
+        }
+        
+        const textRes = data.result;
         
         // Format markdown to HTML
-        const htmlContent = textRes
+        let htmlContent = textRes
             .replace(/### (.*?)\n/g, '<h3>$1</h3>')
             .replace(/## (.*?)\n/g, '<h2>$1</h2>')
             .replace(/# (.*?)\n/g, '<h1>$1</h1>')
@@ -206,21 +218,30 @@ async function handleFormSubmit(btnId, resultId, prompt, mode) {
             .replace(/\n- /g, '<br>• ')
             .replace(/\n\n/g, '<br><br>');
             
-        resultArea.innerHTML = htmlContent;
-        resultArea.style.display = 'block';
-        resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if(resultArea) {
+            resultArea.innerHTML = htmlContent;
+            
+            if (mode === 'complaint' && data.complaint_id) {
+                resultArea.innerHTML += `<div style="margin-top:1rem;padding:0.75rem;background:rgba(16, 185, 129, 0.1);border:1px solid #10b981;border-radius:8px;color:#10b981;"><strong>✅ Complaint Registered</strong><br>Your Tracking ID is: <code>${data.complaint_id}</code></div>`;
+            }
+            
+            resultArea.style.display = 'block';
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
         
-        // Return full response object for complaint ID extraction
-        return { success: true, text: textRes };
+        return data;
         
     } catch (err) {
-        resultArea.innerHTML = `<div style="color:#ef4444;">❌ Error: ${err.message}</div>`;
-        resultArea.style.display = 'block';
+        console.error(err);
+        if(resultArea) {
+            resultArea.innerHTML = `<div style="color:#ef4444;padding:1rem;background:rgba(239,68,68,0.1);border-radius:8px;">❌ Error: ${err.message}</div>`;
+            resultArea.style.display = 'block';
+        }
         return null;
     } finally {
-        btn.disabled = false;
-        btnText.style.display = 'inline';
-        btnLoader.style.display = 'none';
+        if(btn) btn.disabled = false;
+        if(btnText) btnText.style.display = 'inline';
+        if(btnLoader) btnLoader.style.display = 'none';
     }
 }
 
@@ -239,91 +260,8 @@ async function callApi(input, mode, language) {
     const data = await response.json();
     
     if (data.success) {
-        // Specifically check if it's a complaint to return the ID
-        if (mode === 'complaint' && data.complaint_id) {
-            // Store it globally for the form handler to grab
-            window.lastComplaintId = data.complaint_id;
-            return data.result + `\n\n**Tracking ID:** ${data.complaint_id}`;
-        }
         return data.result;
     } else {
         throw new Error(data.error || 'Server error');
-    }
-}
-
-// Modify callApi return handling for complaints
-const originalCallApi = callApi;
-callApi = async function(input, mode, lang) {
-    const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            input: input,
-            mode: mode,
-            language: lang,
-            temperature: 0.7
-        })
-    });
-    const data = await response.json();
-    if (data.success) {
-        return data.result;
-    } else {
-        throw new Error(data.error);
-    }
-}
-
-// Override handleFormSubmit to get full response object
-async function handleFormSubmit(btnId, resultId, prompt, mode) {
-    const btn = document.getElementById(btnId);
-    const btnText = btn.querySelector('.btn-text');
-    const btnLoader = btn.querySelector('.btn-loader');
-    const resultArea = document.getElementById(resultId);
-    const lang = document.getElementById('language-select').value;
-    
-    btn.disabled = true;
-    btnText.style.display = 'none';
-    btnLoader.style.display = 'inline';
-    resultArea.style.display = 'none';
-    
-    try {
-        const response = await fetch('/api/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ input: prompt, mode: mode, language: lang, temperature: 0.7 })
-        });
-        const data = await response.json();
-        
-        if (!data.success) throw new Error(data.error);
-        
-        let textRes = data.result;
-        
-        // Format markdown to HTML
-        const htmlContent = textRes
-            .replace(/### (.*?)\n/g, '<h3>$1</h3>')
-            .replace(/## (.*?)\n/g, '<h2>$1</h2>')
-            .replace(/# (.*?)\n/g, '<h1>$1</h1>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/\n- /g, '<br>• ')
-            .replace(/\n\n/g, '<br><br>');
-            
-        resultArea.innerHTML = htmlContent;
-        if(data.complaint_id) {
-            resultArea.innerHTML += `<div style="margin-top:1rem;padding:0.75rem;background:rgba(16, 185, 129, 0.1);border:1px solid #10b981;border-radius:8px;color:#10b981;"><strong>✅ Complaint Registered</strong><br>Your Tracking ID is: <code>${data.complaint_id}</code></div>`;
-        }
-        
-        resultArea.style.display = 'block';
-        resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        
-        return data;
-        
-    } catch (err) {
-        resultArea.innerHTML = `<div style="color:#ef4444;padding:1rem;background:rgba(239,68,68,0.1);border-radius:8px;">❌ Error: ${err.message}</div>`;
-        resultArea.style.display = 'block';
-        return null;
-    } finally {
-        btn.disabled = false;
-        btnText.style.display = 'inline';
-        btnLoader.style.display = 'none';
     }
 }
