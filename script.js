@@ -219,7 +219,7 @@ async function handleFormSubmit(btnId, resultId, prompt, mode) {
     if(resultArea) resultArea.style.display = 'none';
     
     try {
-        const response = await fetch('/api/generate', {
+        const response = await fetch('/api', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ input: prompt, mode: mode, language: lang, temperature: 0.7 })
@@ -276,7 +276,7 @@ async function handleFormSubmit(btnId, resultId, prompt, mode) {
 }
 
 async function callApi(input, mode, language) {
-    const response = await fetch('/api/generate', {
+    const response = await fetch('/api', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

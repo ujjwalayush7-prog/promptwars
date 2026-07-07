@@ -56,7 +56,7 @@ def generate_complaint_id(description):
     raw = f"{time.time()}-{description}"
     return f"SB-{hashlib.sha256(raw.encode()).hexdigest()[:10].upper()}"
 
-@app.route('/api/generate', methods=['POST'])
+@app.route('/api', methods=['POST'])
 def generate():
     if not client:
         return jsonify({"success": False, "error": "AI service not configured."}), 503
