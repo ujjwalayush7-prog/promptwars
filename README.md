@@ -1,6 +1,6 @@
 # 🤖 PromptWars AI Solution
 
-> Built for the PromptWars Hackathon 2025
+> Built for the PromptWars Hackathon 2026
 
 ## 📌 Project Description
 
@@ -15,7 +15,7 @@
 ## 🛠️ Tech Stack
 
 - **Frontend/UI**: Streamlit
-- **AI Model**: Google Gemini 2.0 Flash
+- **AI Model**: Google Gemini 2.5 Pro
 - **Language**: Python
 
 ## 📋 How It Works
@@ -58,7 +58,7 @@ streamlit run app.py
 
 ## 👥 Team
 
-- [Your Name]
+- Ujjwal Ayush ([@ujjwalayush7-prog](https://github.com/ujjwalayush7-prog))
 
 ## 📄 License
 

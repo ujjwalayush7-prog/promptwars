@@ -14,7 +14,7 @@ client = genai.Client(api_key=api_key)
 # 🎨 PAGE CONFIG
 # ============================================
 st.set_page_config(
-    page_title="PromptWars AI Solution",
+    page_title="PromptWars AI Solution | Ujjwal Ayush",
     page_icon="🤖",
     layout="wide"
 )
@@ -93,7 +93,7 @@ st.markdown("""
 st.markdown("""
 <div class="main-header">
     <h1>🤖 PromptWars AI Solution</h1>
-    <p>Powered by Google Gemini | Built for the PromptWars Hackathon</p>
+    <p>Powered by Google Gemini 2.5 Pro | Built by Ujjwal Ayush for PromptWars 2026</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -141,7 +141,7 @@ if st.button("🚀 Generate Response", use_container_width=True):
         with st.spinner("✨ AI is thinking..."):
             try:
                 response = client.models.generate_content(
-                    model="gemini-2.0-flash",
+                    model="gemini-2.5-pro",
                     contents=SYSTEM_PROMPT + "\n\nUser Input:\n" + user_input,
                     config={
                         "temperature": temperature,
