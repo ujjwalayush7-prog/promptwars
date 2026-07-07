@@ -1,3 +1,19 @@
+/**
+ * @fileoverview Main frontend script for Smart Bharat.
+ * Handles UI interactions, API calls, theme management, and service worker registration.
+ */
+
+// ============================================
+// 🚀 SERVICE WORKER REGISTRATION
+// ============================================
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+            console.error('ServiceWorker registration failed: ', err);
+        });
+    });
+}
+
 // ============================================
 // 🌓 THEME MANAGEMENT
 // ============================================
@@ -31,6 +47,10 @@ if (themeToggle && themeIcon) {
 // ============================================
 // 📑 TAB MANAGEMENT
 // ============================================
+/**
+ * Switches the active UI tab and displays the corresponding panel.
+ * @param {string} tabId - The ID of the tab to activate ('chat', 'services', 'complaints', 'documents').
+ */
 function switchTab(tabId) {
     // Update tab buttons
     document.querySelectorAll('.tab').forEach(t => {
@@ -53,6 +73,11 @@ const chatArea = document.getElementById('chat-area');
 const chatInput = document.getElementById('chat-input');
 let isTyping = false;
 
+/**
+ * Appends a message bubble to the chat area.
+ * @param {string} content - The markdown or plain text content to display.
+ * @param {boolean} [isUser=false] - Whether the message originated from the user.
+ */
 function addMessage(content, isUser = false) {
     const msgDiv = document.createElement('div');
     msgDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
@@ -78,11 +103,20 @@ function addMessage(content, isUser = false) {
     chatArea.scrollTop = chatArea.scrollHeight;
 }
 
+/**
+ * Populates the chat input field with a preset prompt.
+ * @param {string} text - The preset text to populate.
+ */
 function quickAction(text) {
     chatInput.value = text;
     chatInput.focus();
 }
 
+/**
+ * Handles sending the user's chat message to the API and displaying the response.
+ * @async
+ * @returns {Promise<void>}
+ */
 async function sendChat() {
     const text = chatInput.value.trim();
     if (!text || isTyping) return;

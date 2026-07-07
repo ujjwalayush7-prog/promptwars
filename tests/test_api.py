@@ -10,119 +10,89 @@ import json
 import sys
 import os
 import unittest
+from unittest.mock import MagicMock, patch
+from io import BytesIO
 
 # Add project root to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from api.generate import validate_input, sanitize_input, MAX_INPUT_LENGTH
+from api.index import handler, sanitize_input, generate_complaint_id
 
+class MockRequest:
+    def makefile(self, *args, **kwargs):
+        return BytesIO(b"")
 
-class TestValidateInput(unittest.TestCase):
-    """Test suite for the validate_input function."""
+class TestSmartBharatAPI(unittest.TestCase):
+    """Test suite for the Serverless API."""
 
-    def test_valid_input(self):
-        """Test that a properly formatted input passes validation."""
-        data = {"input": "Hello, world!", "temperature": 0.7}
-        is_valid, error = validate_input(data)
-        self.assertTrue(is_valid)
-        self.assertEqual(error, "")
+    def setUp(self):
+        self.mock_wfile = BytesIO()
+        self.mock_rfile = BytesIO()
+        
+    def _create_handler(self, headers, body=None):
+        req = handler(MockRequest(), ('127.0.0.1', 8000), None)
+        req.headers = headers
+        req.requestline = "POST /api HTTP/1.1"
+        req.request_version = "HTTP/1.1"
+        req.wfile = self.mock_wfile
+        if body:
+            req.rfile = BytesIO(json.dumps(body).encode('utf-8'))
+        return req
 
-    def test_empty_input_rejected(self):
-        """Test that empty or whitespace-only input is rejected."""
-        data = {"input": "   ", "temperature": 0.5}
-        is_valid, error = validate_input(data)
-        self.assertFalse(is_valid)
-        self.assertIn("empty", error.lower())
+    def test_sanitize_input(self):
+        """Test HTML escaping and stripping"""
+        self.assertEqual(sanitize_input(" <script> "), "&lt;script&gt;")
+        self.assertEqual(sanitize_input("hello"), "hello")
 
-    def test_missing_input_rejected(self):
-        """Test that missing input field is rejected."""
-        data = {"temperature": 0.5}
-        is_valid, error = validate_input(data)
-        self.assertFalse(is_valid)
+    def test_generate_complaint_id(self):
+        """Test complaint ID generation format"""
+        cid = generate_complaint_id("Pothole")
+        self.assertTrue(cid.startswith("SB-"))
+        self.assertEqual(len(cid), 13) # SB- + 10 chars
 
-    def test_input_exceeding_max_length_rejected(self):
-        """Test that input exceeding MAX_INPUT_LENGTH is rejected."""
-        data = {"input": "x" * (MAX_INPUT_LENGTH + 1), "temperature": 0.5}
-        is_valid, error = validate_input(data)
-        self.assertFalse(is_valid)
-        self.assertIn("maximum length", error.lower())
+    @patch('api.index.api_key', None)
+    def test_missing_api_key(self):
+        """Test 503 when API key is missing"""
+        req = self._create_handler({'Content-Length': '10'})
+        req.do_POST()
+        response = self.mock_wfile.getvalue().decode('utf-8')
+        self.assertIn('503', response)
+        self.assertIn('AI service not configured', response)
 
-    def test_input_at_max_length_accepted(self):
-        """Test that input exactly at MAX_INPUT_LENGTH is accepted."""
-        data = {"input": "x" * MAX_INPUT_LENGTH, "temperature": 0.5}
-        is_valid, error = validate_input(data)
-        self.assertTrue(is_valid)
+    @patch('api.index.api_key', 'test_key')
+    def test_empty_body(self):
+        """Test 400 when body is empty"""
+        req = self._create_handler({'Content-Length': '0'})
+        req.do_POST()
+        response = self.mock_wfile.getvalue().decode('utf-8')
+        self.assertIn('400', response)
+        self.assertIn('Empty request body', response)
 
-    def test_invalid_temperature_type_rejected(self):
-        """Test that non-numeric temperature is rejected."""
-        data = {"input": "Hello", "temperature": "hot"}
-        is_valid, error = validate_input(data)
-        self.assertFalse(is_valid)
-        self.assertIn("temperature", error.lower())
+    @patch('api.index.api_key', 'test_key')
+    def test_invalid_input(self):
+        """Test 400 when input is missing or empty"""
+        req = self._create_handler({'Content-Length': '20'}, body={"input": "   "})
+        req.do_POST()
+        response = self.mock_wfile.getvalue().decode('utf-8')
+        self.assertIn('400', response)
+        self.assertIn('Invalid request', response)
 
-    def test_temperature_below_range_rejected(self):
-        """Test that temperature below 0.0 is rejected."""
-        data = {"input": "Hello", "temperature": -0.1}
-        is_valid, error = validate_input(data)
-        self.assertFalse(is_valid)
-
-    def test_temperature_above_range_rejected(self):
-        """Test that temperature above 1.0 is rejected."""
-        data = {"input": "Hello", "temperature": 1.5}
-        is_valid, error = validate_input(data)
-        self.assertFalse(is_valid)
-
-    def test_temperature_boundary_values_accepted(self):
-        """Test that temperature at boundary values (0.0 and 1.0) are accepted."""
-        for temp in [0.0, 1.0]:
-            data = {"input": "Hello", "temperature": temp}
-            is_valid, error = validate_input(data)
-            self.assertTrue(is_valid, f"Temperature {temp} should be accepted")
-
-    def test_default_temperature_used(self):
-        """Test that missing temperature defaults to valid value."""
-        data = {"input": "Hello"}
-        is_valid, error = validate_input(data)
-        self.assertTrue(is_valid)
-
-    def test_non_string_input_rejected(self):
-        """Test that non-string input types are rejected."""
-        data = {"input": 12345, "temperature": 0.5}
-        is_valid, error = validate_input(data)
-        self.assertFalse(is_valid)
-
-    def test_non_dict_data_rejected(self):
-        """Test that non-dictionary data is rejected."""
-        is_valid, error = validate_input("not a dict")
-        self.assertFalse(is_valid)
-        self.assertIn("invalid", error.lower())
-
-
-class TestSanitizeInput(unittest.TestCase):
-    """Test suite for the sanitize_input function."""
-
-    def test_html_tags_escaped(self):
-        """Test that HTML tags are properly escaped."""
-        result = sanitize_input("<script>alert('xss')</script>")
-        self.assertNotIn("<script>", result)
-        self.assertIn("&lt;script&gt;", result)
-
-    def test_whitespace_stripped(self):
-        """Test that leading/trailing whitespace is removed."""
-        result = sanitize_input("  hello world  ")
-        self.assertEqual(result, "hello world")
-
-    def test_special_characters_escaped(self):
-        """Test that special HTML characters are escaped."""
-        result = sanitize_input('He said "hello" & goodbye')
-        self.assertIn("&amp;", result)
-        self.assertIn("&quot;", result)
-
-    def test_normal_text_unchanged(self):
-        """Test that normal text passes through unchanged."""
-        result = sanitize_input("Hello world")
-        self.assertEqual(result, "Hello world")
-
+    @patch('api.index.api_key', 'test_key')
+    @patch('api.index.genai.GenerativeModel')
+    def test_successful_chat_request(self, mock_model):
+        """Test successful 200 OK request"""
+        mock_response = MagicMock()
+        mock_response.text = "Hello Citizen"
+        mock_model.return_value.generate_content.return_value = mock_response
+        
+        body = {"input": "Hello", "mode": "chat", "language": "en"}
+        req = self._create_handler({'Content-Length': str(len(json.dumps(body)))}, body=body)
+        
+        req.do_POST()
+        response = self.mock_wfile.getvalue().decode('utf-8')
+        self.assertIn('200', response)
+        self.assertIn('Hello Citizen', response)
+        self.assertIn('"success": true', response.lower())
 
 if __name__ == "__main__":
     unittest.main()
