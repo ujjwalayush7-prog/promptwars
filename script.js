@@ -225,6 +225,15 @@ async function handleFormSubmit(btnId, resultId, prompt, mode) {
             body: JSON.stringify({ input: prompt, mode: mode, language: lang, temperature: 0.7 })
         });
         
+        if (!response.ok) {
+            let errorText = await response.text();
+            try {
+                let errorJson = JSON.parse(errorText);
+                errorText = errorJson.error || errorText;
+            } catch (e) {}
+            throw new Error(`HTTP ${response.status} - ${errorText}`);
+        }
+        
         const data = await response.json();
         
         if (!data.success) {
@@ -277,6 +286,15 @@ async function callApi(input, mode, language) {
             temperature: 0.7
         })
     });
+    
+    if (!response.ok) {
+        let errorText = await response.text();
+        try {
+            let errorJson = JSON.parse(errorText);
+            errorText = errorJson.error || errorText;
+        } catch (e) {}
+        throw new Error(`HTTP ${response.status} - ${errorText}`);
+    }
     
     const data = await response.json();
     
