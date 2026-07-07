@@ -11,7 +11,7 @@ load_dotenv()
 # Add the project root to the path so we can import the API
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-PORT = 8080
+PORT = 8081
 PUBLIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public')
 
 class VercelDevHandler(http.server.SimpleHTTPRequestHandler):

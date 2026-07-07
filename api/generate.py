@@ -28,7 +28,7 @@ from google import genai
 # 🔧 CONFIGURATION
 # ============================================
 MAX_INPUT_LENGTH = 10000  # Maximum characters allowed
-MODEL_NAME = "gemini-2.5-pro"
+MODEL_NAME = "gemini-2.5-flash"
 ALLOWED_ORIGINS = "*"
 
 # Initialize Gemini client securely from environment variable
