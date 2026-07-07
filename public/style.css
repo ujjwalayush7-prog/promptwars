@@ -7,13 +7,15 @@
     box-sizing: border-box;
 }
 
-:root {
+:root, [data-theme="dark"] {
     --bg-primary: #050508;
     --bg-secondary: #0a0a10;
     --glass-bg: rgba(255, 255, 255, 0.03);
     --glass-border: rgba(255, 153, 51, 0.15);
     --text-primary: #fdfdfd;
     --text-secondary: #a0a0b0;
+    --input-bg: rgba(0, 0, 0, 0.3);
+    --msg-bot-bg: rgba(0, 0, 0, 0.2);
     --accent-1: #FF9933; /* India Saffron */
     --accent-2: #138808; /* India Green */
     --accent-3: #000080; /* Ashoka Chakra Navy Blue */
@@ -24,6 +26,23 @@
     --radius-md: 12px;
     --radius-sm: 8px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] {
+    --bg-primary: #f9f9fc;
+    --bg-secondary: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 153, 51, 0.2);
+    --text-primary: #1a1a2e;
+    --text-secondary: #5a5a72;
+    --input-bg: rgba(255, 255, 255, 0.8);
+    --msg-bot-bg: rgba(255, 255, 255, 0.9);
+    --accent-1: #e67300; /* Darker Saffron for light mode text contrast */
+    --accent-2: #0e6b06; /* Darker Green */
+    --accent-3: #000080;
+    --gradient-main: linear-gradient(135deg, #e67300 0%, #000080 50%, #0e6b06 100%);
+    --gradient-btn: linear-gradient(135deg, #FF9933 0%, #e68a2e 100%);
+    --shadow-glow: 0 4px 15px rgba(255, 153, 51, 0.15);
 }
 
 body {
@@ -165,6 +184,32 @@ body {
     gap: 0.5rem;
 }
 
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.theme-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: var(--transition);
+}
+
+.theme-btn:hover {
+    background: rgba(255, 153, 51, 0.1);
+    transform: scale(1.05);
+}
+
 .logo {
     font-size: 1.5rem;
 }
@@ -176,8 +221,8 @@ body {
 }
 
 .lang-selector select {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--glass-bg);
+    color: var(--text-primary);
     border: 1px solid var(--glass-border);
     padding: 0.5rem 1rem;
     border-radius: 50px;
@@ -188,7 +233,7 @@ body {
     font-family: inherit;
     appearance: none;
     -webkit-appearance: none;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23a0a0b0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat, repeat;
     background-position: right .7em top 50%, 0 0;
     background-size: .65em auto, 100%;
@@ -197,7 +242,7 @@ body {
 
 .lang-selector select option {
     background: var(--bg-secondary);
-    color: white;
+    color: var(--text-primary);
 }
 
 /* ============================================
@@ -390,7 +435,7 @@ body {
 }
 
 .msg-content {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--msg-bot-bg);
     padding: 1rem 1.25rem;
     border-radius: var(--radius-md);
     border-top-left-radius: 0;
@@ -416,7 +461,7 @@ body {
     display: flex;
     gap: 0.75rem;
     align-items: flex-end;
-    background: rgba(0,0,0,0.3);
+    background: var(--input-bg);
     padding: 0.75rem;
     border-radius: var(--radius-md);
     border: 1px solid var(--glass-border);
@@ -426,7 +471,7 @@ body {
     flex-grow: 1;
     background: transparent;
     border: none;
-    color: white;
+    color: var(--text-primary);
     font-family: inherit;
     font-size: 0.95rem;
     resize: none;
@@ -435,7 +480,7 @@ body {
 }
 
 .chat-textarea::placeholder {
-    color: rgba(255,255,255,0.4);
+    color: var(--text-secondary);
 }
 
 .send-btn {
@@ -499,11 +544,11 @@ body {
 .form-group input, 
 .form-group select, 
 .form-group textarea {
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--input-bg);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-sm);
     padding: 0.75rem 1rem;
-    color: white;
+    color: var(--text-primary);
     font-family: inherit;
     font-size: 0.95rem;
     outline: none;
@@ -512,7 +557,7 @@ body {
 
 .form-group select {
     appearance: none;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23a0a0b0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 0.65em auto;
@@ -521,6 +566,7 @@ body {
 
 .form-group select option {
     background: var(--bg-secondary);
+    color: var(--text-primary);
 }
 
 .form-group input:focus, 
@@ -558,7 +604,7 @@ body {
    🎯 RESULTS AREA
    ============================================ */
 .result-area {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--msg-bot-bg);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-md);
     padding: 1.5rem;
@@ -570,7 +616,7 @@ body {
 .result-area h1, .result-area h2, .result-area h3 {
     margin-bottom: 0.75rem;
     margin-top: 1.25rem;
-    color: white;
+    color: var(--text-primary);
 }
 
 .result-area h1:first-child, .result-area h2:first-child, .result-area h3:first-child {
@@ -598,7 +644,7 @@ body {
 }
 
 .complaint-card {
-    background: rgba(255,255,255,0.03);
+    background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-sm);
     padding: 1rem;
@@ -661,7 +707,7 @@ body {
 }
 
 .footer-content {
-    background: rgba(0,0,0,0.2);
+    background: var(--msg-bot-bg);
     padding: 1rem;
     border-radius: var(--radius-sm);
     border: 1px solid var(--glass-border);

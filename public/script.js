@@ -1,4 +1,34 @@
 // ============================================
+// 🌓 THEME MANAGEMENT
+// ============================================
+const themeToggle = document.getElementById('theme-toggle');
+const rootElement = document.documentElement;
+const themeIcon = themeToggle ? themeToggle.querySelector('.theme-icon') : null;
+
+if (themeToggle && themeIcon) {
+    // Check for saved theme preference or OS preference
+    const savedTheme = localStorage.getItem('smart_bharat_theme');
+    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+
+    if (savedTheme === 'light' || (!savedTheme && prefersLight)) {
+        rootElement.setAttribute('data-theme', 'light');
+        themeIcon.textContent = '🌙';
+    } else {
+        rootElement.setAttribute('data-theme', 'dark');
+        themeIcon.textContent = '🌞';
+    }
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = rootElement.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        rootElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('smart_bharat_theme', newTheme);
+        themeIcon.textContent = newTheme === 'dark' ? '🌞' : '🌙';
+    });
+}
+
+// ============================================
 // 📑 TAB MANAGEMENT
 // ============================================
 function switchTab(tabId) {
