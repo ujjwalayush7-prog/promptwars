@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI-powered solution built by Ujjwal Ayush for PromptWars Hackathon 2026">
+    <meta name="description" content="AI-powered solution built by Ujjwal Ayush for PromptWars Hackathon 2026. Powered by Google Gemini 2.5 Pro.">
+    <meta name="author" content="Ujjwal Ayush">
+    <meta name="theme-color" content="#0a0a1a">
     <title>PromptWars AI Solution | Ujjwal Ayush</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,8 +13,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="bg-animation">
+    <!-- Skip Navigation Link for Accessibility -->
+    <a href="#main-content" class="skip-link" id="skip-nav">Skip to main content</a>
+
+    <!-- Animated Background (decorative, hidden from screen readers) -->
+    <div class="bg-animation" aria-hidden="true">
         <div class="bg-orb bg-orb-1"></div>
         <div class="bg-orb bg-orb-2"></div>
         <div class="bg-orb bg-orb-3"></div>
@@ -20,9 +25,9 @@
 
     <div class="container">
         <!-- Header -->
-        <header class="header" id="header">
-            <div class="header-glow"></div>
-            <div class="header-badge">⚡ PromptWars 2026</div>
+        <header class="header" id="header" role="banner">
+            <div class="header-glow" aria-hidden="true"></div>
+            <div class="header-badge" aria-label="PromptWars 2026 Hackathon">⚡ PromptWars 2026</div>
             <h1 class="header-title">
                 <span class="gradient-text">🤖 PromptWars AI</span>
             </h1>
@@ -30,59 +35,91 @@
         </header>
 
         <!-- Main App -->
-        <main class="main-content">
+        <main class="main-content" id="main-content" role="main">
             <!-- Input Section -->
-            <section class="input-section glass-card" id="input-section">
+            <section class="input-section glass-card" id="input-section" aria-labelledby="input-heading">
                 <div class="section-header">
-                    <span class="section-icon">📝</span>
-                    <h2>Enter Your Input</h2>
+                    <span class="section-icon" aria-hidden="true">📝</span>
+                    <h2 id="input-heading">Enter Your Input</h2>
                 </div>
+                <label for="user-input" class="sr-only">Enter your text for AI processing</label>
                 <textarea 
                     id="user-input" 
                     class="input-textarea" 
                     placeholder="Type or paste your text here..."
                     rows="6"
+                    aria-describedby="input-help"
+                    aria-required="true"
                 ></textarea>
+                <p id="input-help" class="sr-only">Press Ctrl+Enter to submit, or use the Generate button below</p>
                 
                 <!-- Settings Row -->
-                <div class="settings-row">
+                <div class="settings-row" role="group" aria-label="Generation settings">
                     <div class="setting-item">
-                        <label for="temperature-slider">🎨 Creativity</label>
+                        <label for="temperature-slider" id="temp-label">🎨 Creativity</label>
                         <div class="slider-container">
-                            <input type="range" id="temperature-slider" min="0" max="100" value="70" class="slider">
-                            <span id="temp-value" class="slider-value">0.7</span>
+                            <input 
+                                type="range" 
+                                id="temperature-slider" 
+                                min="0" 
+                                max="100" 
+                                value="70" 
+                                class="slider"
+                                aria-labelledby="temp-label"
+                                aria-valuemin="0"
+                                aria-valuemax="1"
+                                aria-valuenow="0.7"
+                                aria-valuetext="Creativity level: 0.7 out of 1.0"
+                            >
+                            <span id="temp-value" class="slider-value" aria-live="polite">0.7</span>
                         </div>
                     </div>
                 </div>
 
-                <button id="generate-btn" class="generate-btn" onclick="generateResponse()">
+                <button 
+                    id="generate-btn" 
+                    class="generate-btn" 
+                    onclick="generateResponse()"
+                    aria-label="Generate AI response"
+                >
                     <span class="btn-text">🚀 Generate Response</span>
-                    <span class="btn-loader" style="display:none;">
-                        <span class="spinner"></span> AI is thinking...
+                    <span class="btn-loader" style="display:none;" aria-live="assertive">
+                        <span class="spinner" aria-hidden="true"></span> AI is thinking...
                     </span>
                 </button>
             </section>
 
             <!-- Output Section -->
-            <section class="output-section glass-card" id="output-section" style="display:none;">
+            <section 
+                class="output-section glass-card" 
+                id="output-section" 
+                style="display:none;"
+                aria-labelledby="result-heading"
+                aria-live="polite"
+            >
                 <div class="section-header">
-                    <span class="section-icon">🎯</span>
-                    <h2>Result</h2>
-                    <button class="copy-btn" id="copy-btn" onclick="copyResult()" title="Copy to clipboard">
+                    <span class="section-icon" aria-hidden="true">🎯</span>
+                    <h2 id="result-heading">Result</h2>
+                    <button 
+                        class="copy-btn" 
+                        id="copy-btn" 
+                        onclick="copyResult()" 
+                        aria-label="Copy result to clipboard"
+                    >
                         📋 Copy
                     </button>
                 </div>
-                <div id="result-content" class="result-content"></div>
+                <div id="result-content" class="result-content" role="region" aria-label="AI generated response" tabindex="0"></div>
             </section>
 
             <!-- Error Section -->
-            <div id="error-message" class="error-message" style="display:none;">
-                <span>❌</span> <span id="error-text"></span>
+            <div id="error-message" class="error-message" style="display:none;" role="alert" aria-live="assertive">
+                <span aria-hidden="true">❌</span> <span id="error-text"></span>
             </div>
         </main>
 
         <!-- Footer -->
-        <footer class="footer">
+        <footer class="footer" role="contentinfo">
             <p>Built with ❤️ by <strong>Ujjwal Ayush</strong> for PromptWars Hackathon 2026</p>
         </footer>
     </div>
